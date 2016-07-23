@@ -2,19 +2,10 @@ package main
 
 import (
 	"fmt"
+    "os"
 	"net/http"
     "html"
 )
-
-const LocationTypeStation = "Station";
-const LocationTypePoint = "Point";
-
-type Location struct {
-    latitude float32
-    longitude float32
-    name string
-    locationType string
-}
 
 func handleGetNext(rw http.ResponseWriter, request *http.Request) {
     fmt.Fprint(rw, "GetNext, %q", html.EscapeString(request.URL.Path))
@@ -25,7 +16,16 @@ func handlePostPosition(rw http.ResponseWriter, request *http.Request) {
 }
 
 func main() {
-    http.HandleFunc("/next", handleGetNext)
-    http.HandleFunc("/position", handlePostPosition)
-    http.ListenAndServe(":8082", nil)
+    request := os.Args[1]
+
+    if request == "server" {
+        http.HandleFunc("/next", handleGetNext)
+        http.HandleFunc("/position", handlePostPosition)
+        http.ListenAndServe(":8082", nil)
+    } else if request == "route" {
+        subRequest := os.Args[2]
+        handleRequest(subRequest)
+    } else {
+        fmt.Println("Expected some parameter ...")
+    }
 }
