@@ -14,6 +14,8 @@ type Route struct {
     end Location
 }
 
+var db *sql.DB = nil
+
 func handleRequest(subRequest string) {
    if (subRequest == "list") {
        fmt.Println("list all routes now")
@@ -23,19 +25,25 @@ func handleRequest(subRequest string) {
    }
 }
 
-func getAllRoutes() {
-    fmt.Println("in route");
-
-    db, err := sql.Open("mysql", "train:kaluma@/train")
+func openDatabase() {
+    var err error
+    db, err = sql.Open("mysql", "train:kaluma@/train")
     if err != nil {
         panic(err.Error()) // Just for example purpose. You should use proper error handling instead of panic
     }
-    defer db.Close()
 
     // Open doesn't open a connection. Validate DSN data:
     err = db.Ping()
     if err != nil {
         panic(err.Error()) // proper error handling instead of panic in your app
+    }
+}
+
+func getAllRoutes() {
+
+    if db == nil {
+        openDatabase()
+        defer db.Close()
     }
 
     // Prepare statement for reading data
