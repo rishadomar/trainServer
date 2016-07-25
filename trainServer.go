@@ -5,7 +5,10 @@ import (
     "os"
 	"net/http"
     "html"
+    "database/sql"
 )
+
+var db *sql.DB = nil
 
 func handleGetNext(rw http.ResponseWriter, request *http.Request) {
     fmt.Fprint(rw, "GetNext, %q", html.EscapeString(request.URL.Path))
@@ -16,6 +19,12 @@ func handlePostPosition(rw http.ResponseWriter, request *http.Request) {
 }
 
 func main() {
+
+    if db == nil {
+        openDatabase()
+        defer db.Close()
+    }
+
     request := os.Args[1]
 
     if request == "server" {
