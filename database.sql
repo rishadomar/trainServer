@@ -41,6 +41,10 @@ CREATE TABLE `passenger` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 # Test data
+
+#
+# Route 05
+#
 INSERT INTO `route` VALUES (null, 'Cape Flats', '05', null);
 
 INSERT INTO `location` VALUES (null, 'Crawford', -33.9762856,18.4986613, 'Station', null);
@@ -88,3 +92,52 @@ INSERT INTO `location` VALUES (null, '', -33.9242903,18.4316869, 'Point', null);
 INSERT INTO `location` VALUES (null, '', -33.9236849,18.4294767, 'Point', null);
 INSERT INTO `location` VALUES (null, 'Cape Town', -33.9236849,18.4294767, 'Station', null);
 
+INSERT INTO `route_location_link` VALUES (null, 1, 1, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 1, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 2, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 3, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 4, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 5, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 6, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 7, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 8, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 9, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 10, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 11, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 12, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 13, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 14, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 15, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 16, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 17, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 18, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 19, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 20, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 21, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 22, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 23, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 24, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 25, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 26, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 27, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 28, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 29, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 30, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 31, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 32, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 33, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 34, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 35, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 36, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 37, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 38, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 39, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 40, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 41, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 42, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 43, null);
+INSERT INTO `route_location_link` VALUES (null, 1, 44, null);
+
+#
+# Route 07
+#
