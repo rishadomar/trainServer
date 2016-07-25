@@ -4,17 +4,16 @@ import (
     "fmt"
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
+    "log"
 )
 
 type Route struct {
-    name string
-    code string
-    start Location
-    points [] Location
-    end Location
+    id          int
+    name        string
+    code        string
+    locations   []Location
+    timeCreated string
 }
-
-var db *sql.DB = nil
 
 func handleRequest(subRequest string) {
    if (subRequest == "list") {
@@ -23,6 +22,16 @@ func handleRequest(subRequest string) {
    } else {
        fmt.Println("Unknown request in route " + subRequest)
    }
+}
+
+func printRoute(route *Route) {
+    fmt.Println("-------------------------")
+    fmt.Println(fmt.Sprintf("%d %s %s %s",  route.id, route.name, route.code, route.timeCreated))
+    fmt.Println("Points:")
+    for i := range(route.locations) {
+        location := route.locations[i]
+        printLocation(&location)
+    }
 }
 
 func openDatabase() {
@@ -40,60 +49,37 @@ func openDatabase() {
 }
 
 func getAllRoutes() {
-
-    if db == nil {
-        openDatabase()
-        defer db.Close()
+    routes := readRoutesFromDatabase()
+    fmt.Println("Number of routes found = ", len(routes))
+    for i := range(routes) {
+        route := routes[i]
+        route.locations = getLocationsForRoute(route.id)
+        printRoute(&route)
     }
+}
+
+func readRoutesFromDatabase() ([]Route) {
 
     // Prepare statement for reading data
     rows, err := db.Query("SELECT * FROM route")
     if err != nil {
         panic(err.Error()) // proper error handling instead of panic in your app
     }
+    defer rows.Close()
 
-    // Get column names
-    columns, err := rows.Columns()
-    if err != nil {
-        panic(err.Error()) // proper error handling instead of panic in your app
-    }
-
-    // Make a slice for the values
-    values := make([]sql.RawBytes, len(columns))
-
-    // rows.Scan wants '[]interface{}' as an argument, so we must copy the
-    // references into such a slice
-    // See http://code.google.com/p/go-wiki/wiki/InterfaceSlice for details
-    scanArgs := make([]interface{}, len(values))
-    for i := range values {
-        scanArgs[i] = &values[i]
-    }
-
-    // Fetch rows
+    var routes []Route;
     for rows.Next() {
-        // get RawBytes from data
-        err = rows.Scan(scanArgs...)
+        route := Route{}
+        err := rows.Scan(&route.id, &route.name, &route.code, &route.timeCreated)
         if err != nil {
-            panic(err.Error()) // proper error handling instead of panic in your app
+            log.Fatal(err)
         }
-
-        // Now do something with the data.
-        // Here we just print each column as a string.
-        var value string
-        for i, col := range values {
-            // Here we can check if the value is nil (NULL value)
-            if col == nil {
-                value = "NULL"
-            } else {
-                value = string(col)
-            }
-            fmt.Println(columns[i], ": ", value)
-        }
-        fmt.Println("-----------------------------------")
+        routes = append(routes, route)
     }
-    if err = rows.Err(); err != nil {
-        panic(err.Error()) // proper error handling instead of panic in your app
+    err = rows.Err()
+    if err != nil {
+        log.Fatal(err)
     }
+    return routes
 }
-
 
