@@ -18,13 +18,20 @@ type Location struct {
 }
 
 func printLocation(location *Location) {
-    fmt.Println(fmt.Sprintf("%5d %-20.20s %-30.30s %f %f %s",
+    fmt.Println(getLocationAsString(location))
+}
+
+func getLocationAsString(location *Location) (string) {
+    if location == nil {
+        return "(none)"
+    }
+    return fmt.Sprintf("%5d %-20.20s %-30.30s %f %f %s",
         location.id,
         location.locationType,
         location.name,
         location.latitude,
         location.longitude,
-        location.timeCreated))
+        location.timeCreated)
 }
 
 func getLocationsForRoute(routeId int) ([]Location) {
