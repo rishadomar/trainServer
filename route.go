@@ -2,7 +2,6 @@ package main
 
 import (
     "fmt"
-	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
     "log"
 )
@@ -31,20 +30,6 @@ func printRoute(route *Route) {
     for i := range(route.locations) {
         location := route.locations[i]
         printLocation(&location)
-    }
-}
-
-func openDatabase() {
-    var err error
-    db, err = sql.Open("mysql", "train:kaluma@/train")
-    if err != nil {
-        panic(err.Error()) // Just for example purpose. You should use proper error handling instead of panic
-    }
-
-    // Open doesn't open a connection. Validate DSN data:
-    err = db.Ping()
-    if err != nil {
-        panic(err.Error()) // proper error handling instead of panic in your app
     }
 }
 
