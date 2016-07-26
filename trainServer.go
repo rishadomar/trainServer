@@ -6,6 +6,7 @@ import (
 	"net/http"
     "html"
     "database/sql"
+    "strconv"
 )
 
 var db *sql.DB = nil
@@ -18,11 +19,12 @@ func handlePostPosition(rw http.ResponseWriter, request *http.Request) {
     fmt.Fprint(rw, "PostPosition , %q", html.EscapeString(request.URL.Path))
 }
 
-func whereAmI(latitude float32, longitude float32) (Location, Location) {
+func whereAmI(latitude float64, longitude float64) {
     // 1. find closest location in Location
     // 2. find the route(s) that you're on
     // 3. find the stations around this location
-    return nil, nil
+    location, distance := getClosestLocationTo(latitude, longitude)
+    fmt.Println("The closest location is: ", location.id, "and distance is: ", distance)
 }
 
 func main() {
@@ -42,10 +44,11 @@ func main() {
         subRequest := os.Args[2]
         handleRequest(subRequest)
     } else if request == "whereami" {
-        latitude := os.Args[2]
-        longitude := os.Args[3]
-        stationComingFrom, stationGoingTo := whereAmI(latitude, longitude)
-        fmt.Println("You are coming from: ", getLocationAsString(&stationComingFrom), " and you are going to: ", getLocationAsString(&stationGoingTo));
+        latitude, _ := strconv.ParseFloat(os.Args[2], 64)
+        longitude, _ := strconv.ParseFloat(os.Args[3], 64)
+        //stationComingFrom, stationGoingTo := whereAmI(latitude, longitude)
+        whereAmI(latitude, longitude)
+        //fmt.Println("You are coming from: ", getLocationAsString(&stationComingFrom), " and you are going to: ", getLocationAsString(&stationGoingTo));
     } else {
         fmt.Println("Expected some parameter ...")
     }
