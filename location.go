@@ -3,6 +3,7 @@ package main
 import (
     "log"
     "fmt"
+	"strconv"
 )
 
 const LocationTypeStation = "Station";
@@ -11,8 +12,8 @@ const LocationTypePoint = "Point";
 type Location struct {
     id int
     name string
-    latitude float32
-    longitude float32
+    latitude float64
+    longitude float64
     locationType string
     timeCreated string
 }
@@ -37,6 +38,14 @@ func getLocationAsString(location *Location) (string) {
 func getLocationsForRoute(routeId int) ([]Location) {
     locations := readLocationsFromDatabase(routeId)
     return locations
+}
+
+func getStationsSurrounding(location Location) (Location, Location) {
+    if (location.locationType == LocationTypeStation) {
+        return location,location
+    }
+    locations := getClosestStationsTo(location.latitude, location.longitude, 2)
+    return locations[0], locations[1]
 }
 
 func readLocationsFromDatabase(routeId int) ([]Location) {
@@ -84,10 +93,10 @@ func readLocationFromDatabase(locationId int) (Location) {
     return location
 }
 
-func getClosestLocationTo(latitude float64, longitude float64) (Location, int) {
+func getClosestLocationTo(latitude float64, longitude float64) (Location, float64) {
     var id int
-    var distance int
-    query := "SELECT location.ID, 111.045 * haversine(latitude, longitude, ?, ?) AS distance FROM location";
+    var distance float64
+    query := "SELECT location.ID, min(111.045 * haversine(latitude, longitude, ?, ?)) AS distance FROM location group by id order by distance asc limit 1"
     err := db.QueryRow(query, latitude , longitude).Scan(
         &id,
         &distance)
@@ -97,32 +106,30 @@ func getClosestLocationTo(latitude float64, longitude float64) (Location, int) {
     return readLocationFromDatabase(id), distance
 }
 
-/**
-	static public function getClosestPointsToXY($latitude, $longitude, udo_Customer $customer = null)
-	{
-		global $controller;
-		$query = 'SELECT udo_location.ID, 111.045 * haversine(gpsLatitude, gpsLongitude, ' . $latitude . ', ' . $longitude . ') AS distance FROM udo_location';
+func getClosestStationsTo(latitude float64, longitude float64, count int) ([]Location) {
+    query := "SELECT location.ID, min(111.045 * haversine(latitude, longitude, ?, ?)) AS distance FROM location WHERE locationType = 'Station' group by id order by distance asc limit " + strconv.Itoa(count)
+	fmt.Println(query)
+    rows, err := db.Query(query, latitude, longitude)
+    if err != nil {
+        panic(err.Error()) // proper error handling instead of panic in your app
+    }
+    defer rows.Close()
 
-		if ($customer != null) {
-			$query .= ', udo_customerlocations';
-		}
+    var locations []Location;
+    for rows.Next() {
+        var id int
+        var distance float64
+        err := rows.Scan(&id, &distance)
+        if err != nil {
+            log.Fatal(err)
+        }
+        location := readLocationFromDatabase(id)
+        locations = append(locations, location)
+    }
+    err = rows.Err()
+    if err != nil {
+        log.Fatal(err)
+    }
+    return locations
+}
 
-		$query .= ' WHERE gpsLatitude is not null AND gpsLatitude != 0 AND gpsLongitude is not null AND gpsLatitude != 0 AND gpsLongitude != 0 AND active = 1 AND _type = "udo_Point"';
-
-		if ($customer != null) {
-			$query .= ' AND udo_customerlocations.location_id = udo_location.ID AND udo_customerlocations.customer_id = ' . $customer->getId();
-		}
-
-		$query .= ' HAVING distance is null OR distance < 10 ORDER BY distance';
-		$rows = $controller->db->getAll($query);
-		if ($rows === false) {
-			$msg = 'Failed getting the points close by.';
-			Log::addErrorMessage(	$msg .
-				' Query: ' . $query .
-				' Reason: ' . $controller->db->errorMsg());
-			throw new Exception($msg);
-		}
-
-		return $rows;
-	}
-***/

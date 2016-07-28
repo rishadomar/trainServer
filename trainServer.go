@@ -25,6 +25,12 @@ func whereAmI(latitude float64, longitude float64) {
     // 3. find the stations around this location
     location, distance := getClosestLocationTo(latitude, longitude)
     fmt.Println("The closest location is: ", location.id, "and distance is: ", distance)
+    if location.locationType == LocationTypeStation {
+        fmt.Println("You are at station: ", location.name)
+    } else {
+        station1, station2 := getStationsSurrounding(location)
+		fmt.Println("You are closest to these stations: ", station1.name, " and ", station2.name)
+    }
 }
 
 func main() {
