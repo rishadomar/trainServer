@@ -74,7 +74,7 @@ func main() {
         http.HandleFunc("/next", handleGetNext)
         http.HandleFunc("/position", handlePostPosition)
 		http.HandleFunc("/whereami", handleGetWhereami)
-        http.ListenAndServe(":8082", nil)
+        http.ListenAndServe(":8083", nil)
     } else if request == "route" {
         subRequest := os.Args[2]
         handleRequest(subRequest)
